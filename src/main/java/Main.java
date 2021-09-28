@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        Parser buffParse = new ParserViaBufferedReader();
+        ParserViaBufferedReader buffParse = new ParserViaBufferedReader();
         var file = new File("voyna.txt");
 
         ArrayList<String> list = buffParse.parse(file);

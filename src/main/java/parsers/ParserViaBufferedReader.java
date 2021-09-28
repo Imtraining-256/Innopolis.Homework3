@@ -3,10 +3,12 @@ package parsers;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 
 public class ParserViaBufferedReader implements Parser{
 
-    private Pattern pattern = Pattern.compile("(^|\\A|\\s|)[Сс]трада.*?(\\s|$|)");
+    private Pattern pattern = Pattern.compile("[Сс]трада\\w*");
 
     @Override
     public ArrayList<String> parse(File file) {
@@ -23,15 +25,16 @@ public class ParserViaBufferedReader implements Parser{
             var line = reader != null ? reader.readLine() : null;
 
             while (line != null) {
-                var matcher = pattern.matcher(line);
-                if (matcher.find())
-                    list.add(matcher.group());
+                list.add(line);
                 line = reader.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return list;
+        var filteredList = list.stream().filter(pattern.asPredicate()).collect(Collectors.toList());
+
+        ArrayList<String> matches = new ArrayList<>(filteredList);
+        return matches;
     }
 }
