@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class ParserViaScanner implements Parser {
 
-    private static final String WORD_TO_FIND = "[Сс]трада";
+    private static final String WORD_TO_FIND = "[Сс]трада\\S*\\b";
     private final Pattern pattern = Pattern.compile(WORD_TO_FIND);
 
     @Override
