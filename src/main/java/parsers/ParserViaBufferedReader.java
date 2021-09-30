@@ -6,13 +6,16 @@ import java.util.regex.Pattern;
 
 public class ParserViaBufferedReader implements Parser{
 
-    private Pattern pattern = Pattern.compile("[Сс]трада\\w*(.*)");
+    private static final String WORD_TO_FIND = "(.*)[Сс]трада(.*)";
+    private static final String WORDS_SEPARATE = "\\P{L}+";
+
+    private final Pattern pattern = Pattern.compile(WORD_TO_FIND);
+
     private ArrayList<String> list = new ArrayList<>();
 
     @Override
     public ArrayList<String> parse(File file) {
         BufferedReader reader = null;
-
 
         try {
             reader = new BufferedReader(new FileReader(file));
@@ -33,16 +36,22 @@ public class ParserViaBufferedReader implements Parser{
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return list;
     }
 
     private void addWord(String line){
-        var words = line.split("\\P{L}+");
+        var words = line.split(WORDS_SEPARATE);
 
         for(String word : words) {
-            if(word.matches("(.*)[Сс]трада(.*)")){
+            if(word.matches(WORD_TO_FIND)){
                 list.add(word);
             }
         }

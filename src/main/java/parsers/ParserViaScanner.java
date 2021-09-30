@@ -10,21 +10,27 @@ import java.util.stream.Collectors;
 
 public class ParserViaScanner implements Parser {
 
-    private Pattern pattern = Pattern.compile("[Сс]трада");
+    private static final String WORD_TO_FIND = "[Сс]трада";
+    private final Pattern pattern = Pattern.compile(WORD_TO_FIND);
 
     @Override
     public ArrayList<String> parse(File file) {
         Scanner scanner = null;
+
+        ArrayList<String> matches = new ArrayList<>();
         try {
             scanner = new Scanner(file);
+            matches = scanner.findAll(pattern)
+                    .map(MatchResult::group)
+                    .collect(Collectors.toCollection(ArrayList::new));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
         }
 
-        var matches = scanner.findAll(pattern).map(MatchResult::group).collect(Collectors.toList());
-
-        ArrayList<String> list = new ArrayList<>(matches);
-
-        return list;
+        return matches;
     }
 }
